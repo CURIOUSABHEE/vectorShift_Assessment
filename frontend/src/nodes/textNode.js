@@ -32,9 +32,23 @@ const config = {
     {
       type: 'textarea',
       name: 'text',
-      defaultValue: '{{input}}',
+      defaultValue: '',
       autoResize: true,
       placeholder: 'Describe your ideas...',
+    },
+    {
+      type: 'select',
+      name: 'role',
+      label: 'Role',
+      options: ['System', 'User', 'Assistant'],
+      defaultValue: 'User',
+    },
+    {
+      type: 'select',
+      name: 'trim',
+      label: 'Trim',
+      options: ['On', 'Off'],
+      defaultValue: 'On',
     },
   ],
 };

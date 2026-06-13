@@ -21,8 +21,22 @@ const config = {
       type: 'select',
       name: 'outputType',
       label: 'Type',
-      options: ['Text', 'Image'],
+      options: ['Text', 'Image', 'File', 'JSON', 'Markdown'],
       defaultValue: 'Text',
+    },
+    {
+      type: 'select',
+      name: 'format',
+      label: 'Format',
+      options: ['Raw', 'Pretty Print', 'Summarized'],
+      defaultValue: 'Raw',
+    },
+    {
+      type: 'select',
+      name: 'saveToMemory',
+      label: 'Save to Memory',
+      options: ['Yes', 'No'],
+      defaultValue: 'No',
     },
   ],
 };

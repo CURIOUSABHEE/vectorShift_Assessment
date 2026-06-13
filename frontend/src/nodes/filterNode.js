@@ -14,17 +14,35 @@ const config = {
   ],
   fields: [
     {
+      type: 'text',
+      name: 'filterField',
+      placeholder: 'Field to evaluate e.g. score',
+    },
+    {
       type: 'select',
       name: 'operator',
       label: 'Condition',
-      options: ['equals', 'gt', 'lt', 'contains', 'not empty'],
+      options: ['equals', 'not equals', 'greater than', 'less than', 'contains', 'not contains', 'is empty', 'is not empty'],
       defaultValue: 'equals',
     },
     {
       type: 'text',
       name: 'threshold',
-      label: 'Value',
-      defaultValue: '',
+      placeholder: 'Value to compare against',
+    },
+    {
+      type: 'select',
+      name: 'caseSensitive',
+      label: 'Case Sensitive',
+      options: ['Yes', 'No'],
+      defaultValue: 'No',
+    },
+    {
+      type: 'select',
+      name: 'onEmpty',
+      label: 'On Empty',
+      options: ['Pass', 'Fail', 'Skip'],
+      defaultValue: 'Fail',
     },
   ],
 };

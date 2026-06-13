@@ -14,6 +14,18 @@ const config = {
   headerRight: <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />,
   fields: [
     {
+      type: 'text',
+      name: 'title',
+      label: 'Title',
+      defaultValue: 'Reference',
+      placeholder: 'Note title',
+    },
+    {
+      type: 'textarea',
+      name: 'content',
+      placeholder: 'Add reference notes here...',
+    },
+    {
       type: 'custom',
       name: 'preview',
       render: () => (
@@ -35,7 +47,19 @@ const config = {
           </button>
         </div>
       )
-    }
+    },
+    {
+      type: 'text',
+      name: 'tags',
+      placeholder: 'tag1, tag2, tag3',
+    },
+    {
+      type: 'select',
+      name: 'priority',
+      label: 'Priority',
+      options: ['Low', 'Medium', 'High'],
+      defaultValue: 'Medium',
+    },
   ]
 };
 

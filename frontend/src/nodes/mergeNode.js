@@ -35,14 +35,6 @@ const VoiceIcon = (
   </svg>
 );
 
-const MusicIcon = (
-  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-sky-500 flex-shrink-0">
-    <path d="M9 18V5l12-2v13"></path>
-    <circle cx="6" cy="18" r="3"></circle>
-    <circle cx="18" cy="16" r="3"></circle>
-  </svg>
-);
-
 const config = {
   title: 'Settings',
   handles: [
@@ -55,11 +47,11 @@ const config = {
     <button className="text-zinc-500 hover:text-zinc-300 font-medium text-sm transition-colors">+</button>
   ),
   fields: [
-    { type: 'select-row', name: 'mode', label: 'Mode', icon: StarIcon, options: ['Fun', 'Pro', 'Creative', 'Standard'], defaultValue: 'Fun', syncKey: 'settings' },
+    { type: 'select-row', name: 'mergeStrategy', label: 'Strategy', icon: StarIcon, options: ['Concat', 'Interleave', 'Summarize', 'Pick Longest', 'Pick Shortest'], defaultValue: 'Concat', syncKey: 'settings' },
+    { type: 'text', name: 'separator', label: 'Separator', defaultValue: '\\n\\n', syncKey: 'settings' },
     { type: 'select-row', name: 'trim', label: 'Trim', icon: ScissorsIcon, options: ['Auto', 'Manual', 'Off'], defaultValue: 'Auto', syncKey: 'settings' },
-    { type: 'select-row', name: 'think', label: 'Think', icon: LightningIcon, options: ['Fast', 'Deep', 'Precise'], defaultValue: 'Fast', syncKey: 'settings' },
-    { type: 'select-row', name: 'voice', label: 'Voice', icon: VoiceIcon, options: ['Happy', 'Sad', 'Neutral', 'Excited'], defaultValue: 'Happy', syncKey: 'settings' },
-    { type: 'select-row', name: 'music', label: 'Music', icon: MusicIcon, options: ['Piano', 'Guitar', 'Synth', 'None'], defaultValue: 'Piano', syncKey: 'settings' },
+    { type: 'select-row', name: 'priority', label: 'Priority', icon: LightningIcon, options: ['A wins', 'B wins', 'Equal'], defaultValue: 'Equal', syncKey: 'settings' },
+    { type: 'select-row', name: 'outputFormat', label: 'Output Format', icon: VoiceIcon, options: ['Text', 'JSON', 'Markdown'], defaultValue: 'Text', syncKey: 'settings' },
   ],
 };
 

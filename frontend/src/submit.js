@@ -108,8 +108,8 @@ export const SubmitButton = () => {
 
             {/* Results Modal */}
             {isOpen && result && createPortal(
-                <div className="fixed inset-0 bg-[#000000]/60 backdrop-blur-sm z-50 flex items-center justify-center transition-all p-4">
-                    <div className="bg-[#141416] border border-[#232329] rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col items-center text-center gap-4 animate-in fade-in zoom-in-95 duration-200 select-none">
+                <div className="fixed inset-0 bg-[#000000]/60 backdrop-blur-sm z-50 flex items-center justify-center transition-all p-3 sm:p-4">
+                    <div className="bg-[#141416] border border-[#232329] rounded-2xl p-4 sm:p-6 w-[calc(100%-1.5rem)] sm:max-w-sm shadow-2xl flex flex-col items-center text-center gap-4 animate-in fade-in zoom-in-95 duration-200 select-none">
                         
                         {/* Status Icon */}
                         {result.isError ? (

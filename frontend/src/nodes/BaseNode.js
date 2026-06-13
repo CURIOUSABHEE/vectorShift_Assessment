@@ -3,8 +3,8 @@
 // --------------------------------------------------------------------------------------------------
 
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Handle, Position } from 'reactflow';
-import { useOnNodesChange, useUpdateNodeField } from '../useStore';
+import { Handle, Position, useReactFlow } from 'reactflow';
+import { useOnNodesChange, useUpdateNodeField, useStore } from '../useStore';
 import { NodeFields } from './NodeFields';
 
 export const BaseNode = ({ id, data, config }) => {
@@ -65,6 +65,22 @@ export const BaseNode = ({ id, data, config }) => {
     return () => timers.forEach(clearTimeout);
   }, [values, id, data, config.fields, updateNodeField]);
 
+  // Reverse sync: pull external store updates into local state
+  useEffect(() => {
+    setValues(prev => {
+      const next = { ...prev };
+      let changed = false;
+      config.fields?.forEach(field => {
+        const storeValue = field.syncKey ? data?.[field.syncKey]?.[field.name] : data?.[field.name];
+        if (storeValue !== undefined && prev[field.name] !== storeValue) {
+          next[field.name] = storeValue;
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [data, config.fields]);
+
   // Height auto-resize logic for textareas
   useEffect(() => {
     config.fields?.forEach(field => {
@@ -90,6 +106,75 @@ export const BaseNode = ({ id, data, config }) => {
     }
     return found;
   }, [values, config.hasVariables, config.variableFieldName]);
+
+  // Prune orphan edges when variables are removed
+  const { setEdges } = useReactFlow();
+  const prevVars = useRef([]);
+  useEffect(() => {
+    if (!config.hasVariables) return;
+    const removed = prevVars.current.filter(v => !variables.includes(v));
+    prevVars.current = variables;
+    if (removed.length === 0) return;
+    setEdges((currentEdges) =>
+      currentEdges.filter((edge) => {
+        const handleId = edge.target === id ? edge.targetHandle
+                        : edge.source === id ? edge.sourceHandle : null;
+        if (!handleId) return true;
+        return !removed.some(v => handleId === `${id}-${v}`);
+      })
+    );
+  }, [variables, id, config.hasVariables, setEdges]);
+
+  // Auto-create Input nodes for {{ variable }} handles
+  const prevAutoVarsRef = useRef([]);
+  useEffect(() => {
+    if (!config.hasVariables) return;
+
+    const currentVars = variables;
+    const prevVars = prevAutoVarsRef.current;
+    prevAutoVarsRef.current = currentVars;
+
+    const removedVars = prevVars.filter(v => !currentVars.includes(v));
+    const addedVars = currentVars.filter(v => !prevVars.includes(v));
+
+    if (removedVars.length > 0) {
+      const s = useStore.getState();
+      for (const varName of removedVars) {
+        s.onNodesChange([{ type: 'remove', id: `input-auto-${varName}` }]);
+        s.onEdgesChange([{ type: 'remove', id: `edge-auto-${varName}` }]);
+      }
+    }
+
+    if (addedVars.length > 0) {
+      const s = useStore.getState();
+      const textNode = s.nodes.find(n => n.id === id);
+      const textPos = textNode?.position || { x: 400, y: 250 };
+      const existingAutoCount = s.nodes.filter(n => n.data?.isAutoCreated).length;
+      let createdCount = 0;
+
+      for (const varName of addedVars) {
+        const sn = useStore.getState();
+        if (sn.nodes.find(n => n.id === `input-auto-${varName}`)) continue;
+
+        const yOffset = (existingAutoCount + createdCount) * 120;
+        createdCount++;
+
+        sn.addNode({
+          id: `input-auto-${varName}`,
+          type: 'customInput',
+          position: { x: textPos.x - 250, y: textPos.y + yOffset },
+          data: { inputName: varName, inputType: 'Text', isAutoCreated: true },
+        });
+
+        sn.onConnect({
+          source: `input-auto-${varName}`,
+          sourceHandle: `input-auto-${varName}-value`,
+          target: id,
+          targetHandle: `${id}-${varName}`,
+        });
+      }
+    }
+  }, [variables, id, config.hasVariables]);
 
   // Dynamic handles (including variables mapped to left target handles)
   const dynamicHandles = useMemo(() => {

@@ -21,8 +21,20 @@ const config = {
       type: 'select',
       name: 'inputType',
       label: 'Type',
-      options: ['Text', 'File'],
+      options: ['Text', 'Number', 'File', 'Image', 'Boolean'],
       defaultValue: 'Text',
+    },
+    {
+      type: 'select',
+      name: 'required',
+      label: 'Required',
+      options: ['Yes', 'No'],
+      defaultValue: 'No',
+    },
+    {
+      type: 'textarea',
+      name: 'description',
+      placeholder: 'Describe this input...',
     },
   ],
 };

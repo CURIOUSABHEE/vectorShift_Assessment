@@ -39,7 +39,8 @@ const ModelLogo = ({ grad }) => (
 const config = {
   title: 'AI Models',
   handles: [
-    { type: 'target', id: 'input', position: Position.Left },
+    { type: 'target', id: 'system', position: Position.Left, style: { top: '25%' } },
+    { type: 'target', id: 'prompt', position: Position.Left, style: { top: '75%' } },
     { type: 'source', id: 'output', position: Position.Right }
   ],
   style: { width: '210px' },
@@ -101,7 +102,31 @@ const config = {
           ]
         }
       ]
-    }
+    },
+    {
+      type: 'number',
+      name: 'temperature',
+      label: 'Temperature',
+      defaultValue: 0.7,
+    },
+    {
+      type: 'number',
+      name: 'maxTokens',
+      label: 'Max Tokens',
+      defaultValue: 1024,
+    },
+    {
+      type: 'textarea',
+      name: 'systemPrompt',
+      placeholder: 'You are a helpful assistant...',
+    },
+    {
+      type: 'select',
+      name: 'stream',
+      label: 'Stream',
+      options: ['Yes', 'No'],
+      defaultValue: 'No',
+    },
   ]
 };
 

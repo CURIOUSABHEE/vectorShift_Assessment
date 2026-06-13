@@ -12,7 +12,7 @@ export const DraggableNode = ({ type, label }) => {
 
     return (
       <div
-        className={`flex items-center px-3 py-1.5 rounded-lg border ${style.border} ${style.bg} ${style.text} text-[11px] font-medium cursor-grab select-none transition-all duration-150 hover:scale-[1.01] active:scale-[0.99] shadow-sm`}
+        className={`flex items-center px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border ${style.border} ${style.bg} ${style.text} text-[10px] sm:text-[11px] font-medium cursor-grab select-none transition-all duration-150 hover:scale-[1.01] active:scale-[0.99] shadow-sm flex-shrink-0`}
         onDragStart={(event) => onDragStart(event, type)}
         onDragEnd={(event) => (event.target.style.cursor = 'grab')}
         draggable

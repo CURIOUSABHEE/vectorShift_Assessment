@@ -41,6 +41,7 @@ const selector = (state) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
+  updateNodeField: state.updateNodeField,
 });
 
 export const PipelineUI = () => {
@@ -57,8 +58,44 @@ export const PipelineUI = () => {
       addNode,
       onNodesChange,
       onEdgesChange,
-      onConnect
+      onConnect,
+      updateNodeField,
     } = useStore(selector, shallow);
+
+    const handleConnect = useCallback((connection) => {
+      onConnect(connection);
+      if (connection.targetHandle && connection.target) {
+        const targetNode = nodes.find(n => n.id === connection.target);
+        if (targetNode && targetNode.type === 'text') {
+          const varName = connection.targetHandle.slice(connection.target.length + 1);
+          const sourceNode = nodes.find(n => n.id === connection.source);
+          if (sourceNode && sourceNode.type === 'customInput' && !sourceNode.data.originalName) {
+            updateNodeField(sourceNode.id, 'originalName', sourceNode.data.inputName);
+          }
+          if (sourceNode && sourceNode.type === 'customInput') {
+            updateNodeField(sourceNode.id, 'inputName', varName);
+          }
+        }
+      }
+    }, [nodes, onConnect, updateNodeField]);
+
+    const handleEdgesChange = useCallback((changes) => {
+      const removals = changes.filter(c => c.type === 'remove');
+      const removedEdges = removals.map(c => edges.find(e => e.id === c.id)).filter(Boolean);
+      onEdgesChange(changes);
+      for (const edge of removedEdges) {
+        if (edge.targetHandle && edge.target) {
+          const targetNode = nodes.find(n => n.id === edge.target);
+          if (targetNode && targetNode.type === 'text') {
+            const sourceNode = nodes.find(n => n.id === edge.source);
+            if (sourceNode && sourceNode.type === 'customInput' && sourceNode.data.originalName) {
+              updateNodeField(sourceNode.id, 'inputName', sourceNode.data.originalName);
+              updateNodeField(sourceNode.id, 'originalName', undefined);
+            }
+          }
+        }
+      }
+    }, [nodes, edges, onEdgesChange, updateNodeField]);
 
     const AVAILABLE_NODES = [
       { type: 'customInput', label: 'Input' },
@@ -187,8 +224,8 @@ export const PipelineUI = () => {
                 nodes={nodes}
                 edges={edges}
                 onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
+                onEdgesChange={handleEdgesChange}
+                onConnect={handleConnect}
                 onDrop={onDrop}
                 onDragOver={onDragOver}
                 onInit={setReactFlowInstance}
@@ -229,11 +266,11 @@ export const PipelineUI = () => {
             {/* Command Palette Search Overlay */}
             {showSearch && createPortal(
               <div 
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start justify-center pt-28 p-4"
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start justify-center pt-16 sm:pt-24 md:pt-28 p-3 sm:p-4"
                 onClick={() => setShowSearch(false)}
               >
                 <div 
-                  className="bg-[#141416] border border-[#232329] rounded-2xl w-full max-w-sm p-4 shadow-2xl flex flex-col gap-3 animate-in fade-in slide-in-from-top-12 duration-200"
+                  className="bg-[#141416] border border-[#232329] rounded-2xl w-[calc(100%-1.5rem)] sm:max-w-sm p-4 shadow-2xl flex flex-col gap-3 animate-in fade-in slide-in-from-top-12 duration-200"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
