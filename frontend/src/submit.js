@@ -37,7 +37,7 @@ export const SubmitButton = () => {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 4000);
             
-            const response = await fetch('http://localhost:8000/pipelines/parse', {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/pipelines/parse`, {
                 method: 'POST',
                 body: formData,
                 signal: controller.signal
