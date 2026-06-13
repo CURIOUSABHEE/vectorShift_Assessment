@@ -209,7 +209,10 @@ export const PipelineUI = () => {
                   }
                 }}
             >
-                <Background variant="cross" color="#1E1E24" gap={gridSize} size={1} />
+                {/* Grid Lines */}
+                <Background id="lines" variant="lines" color="#16161A" gap={gridSize} size={1} />
+                {/* Intersection Dots */}
+                <Background id="dots" variant="dots" color="#3F3F46" gap={gridSize} size={1.5} />
                 <Controls className="bg-[#141416] border border-[#232329] text-zinc-400 rounded-lg shadow-lg" />
                 <MiniMap 
                   nodeStrokeColor={() => '#232329'}
