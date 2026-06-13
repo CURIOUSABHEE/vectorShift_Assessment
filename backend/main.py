@@ -1,12 +1,14 @@
+import os
+import json
 from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
-import json
 
 app = FastAPI()
 
+origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -45,3 +47,8 @@ def parse_pipeline(pipeline: str = Form(...)):
     is_dag = count == num_nodes
 
     return {'num_nodes': num_nodes, 'num_edges': num_edges, 'is_dag': is_dag}
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)

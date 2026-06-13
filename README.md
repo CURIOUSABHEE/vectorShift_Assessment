@@ -31,7 +31,7 @@ All 9 node types (Input, LLM, Output, Text, Number, Merge, Delay, Filter, Note) 
 cd backend
 python -m venv venv
 source venv/bin/activate
-pip install fastapi uvicorn python-multipart
+pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
@@ -55,6 +55,33 @@ npm run build
 ```
 
 Serves optimized output from `frontend/build/`.
+
+## Environment Variables
+
+### Backend
+
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `8000` | Server port (used by Railway/Vercel) |
+| `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated list of allowed origins |
+
+Set `CORS_ORIGINS` to your deployed frontend URL in production:
+
+```bash
+CORS_ORIGINS=https://your-app.vercel.app uvicorn main:app --host 0.0.0.0 --port $PORT
+```
+
+### Frontend
+
+| Variable | Default | Description |
+|---|---|---|
+| `REACT_APP_API_URL` | `http://localhost:8000` | Backend API base URL |
+
+Create `frontend/.env.local` (gitignored) to override:
+
+```
+REACT_APP_API_URL=https://your-api.railway.app
+```
 
 ## How It Works
 
